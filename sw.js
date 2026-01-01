@@ -1,6 +1,6 @@
 // Service Worker - SPARK 메모앱 오프라인 지원
 
-const CACHE_NAME = 'spark-memo-v1';
+const CACHE_NAME = 'spark-memo-v2';
 const urlsToCache = [
   '/',
   '/index.html',
