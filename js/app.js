@@ -110,6 +110,27 @@ function registerEventListeners() {
 function loadMemos() {
   const saved = localStorage.getItem('memos');
   memos = saved ? JSON.parse(saved) : [];
+
+  // 마이그레이션: 기존 메모에 날짜 정보가 없는 경우 추가
+  let needsSave = false;
+  memos = memos.map(memo => {
+    // createdAt이 없는 경우
+    if (!memo.createdAt) {
+      memo.createdAt = memo.id ? new Date(memo.id).toISOString() : new Date().toISOString();
+      needsSave = true;
+    }
+    // updatedAt이 없는 경우
+    if (!memo.updatedAt) {
+      memo.updatedAt = memo.createdAt;
+      needsSave = true;
+    }
+    return memo;
+  });
+
+  // 마이그레이션 후 저장
+  if (needsSave) {
+    saveMemos();
+  }
 }
 
 function saveMemos() {
