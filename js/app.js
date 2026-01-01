@@ -456,9 +456,25 @@ function toggleMenu() {
 // 유틸리티 함수
 // ===================================
 function formatDate(dateString) {
+  // 날짜가 없거나 유효하지 않은 경우
+  if (!dateString) {
+    return '날짜 없음';
+  }
+
   const date = new Date(dateString);
+
+  // 유효하지 않은 날짜인 경우
+  if (isNaN(date.getTime())) {
+    return '날짜 없음';
+  }
+
   const now = new Date();
   const diff = now - date;
+
+  // 미래 날짜인 경우 (시스템 시간 오류)
+  if (diff < 0) {
+    return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+  }
 
   // 1분 이내
   if (diff < 60000) {
@@ -475,8 +491,13 @@ function formatDate(dateString) {
     return `${Math.floor(diff / 3600000)}시간 전`;
   }
 
-  // 그 외
-  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+  // 7일 이내
+  if (diff < 604800000) {
+    return `${Math.floor(diff / 86400000)}일 전`;
+  }
+
+  // 그 외 (날짜와 시간 표시)
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
 }
 
 function resetForm() {
